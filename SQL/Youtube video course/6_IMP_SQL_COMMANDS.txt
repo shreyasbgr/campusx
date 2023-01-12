@@ -1,0 +1,125 @@
+			DDL Commands
+
+1. CREATE DATABASE
+
+CREATE DATABASE IF NOT EXISTS mydb
+
+2. DROP DATABASE
+
+DROP DATABASE mydb
+
+3. CREATE TABLE
+
+CREATE TABLE IF NOT EXISTS users(
+	id integer,
+	name varchar(255),
+	email varchar(255),
+	password varchar(255)
+)
+
+4. DROP TABLE
+
+DROP TABLE users
+
+5. TRUNCATE TABLE (EMPTY THE TABLE)
+
+TRUNCATE TABLE users
+
+6. ADDING CONSTRAINTS TO A TABLE
+
+	- NOT NULL
+	- UNIQUE
+	- PRIMARY KEY
+	- FOREIGN KEY
+	- CHECK
+	- DEFAULT
+	- AUTO_INCREMENT
+
+UNIQUE, NOT NULL
+
+CREATE TABLE users(
+	id integer NOT NULL,
+    name varchar(255),
+    email varchar(255),
+    CONSTRAINT U_email UNIQUE(email),
+    PRIMARY KEY(id)
+)
+
+PRIMARY KEY, FOREIGN KEY
+
+CREATE TABLE orders(
+	order_id integer,
+    user_id integer,
+    time_of_order datetime,
+    PRIMARY KEY(order_id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+)
+
+CHECK
+
+CREATE TABLE students(
+	student_id integer PRIMARY KEY,
+    sname varchar(255) NOT NULL,
+    email varchar(255) NOT NULL UNIQUE,
+    age integer CHECK(age>6 AND age<25)
+)
+
+DEFAULT
+
+CREATE TABLE passenger(
+	passenger_id integer PRIMARY KEY,
+    pname varchar(255) NOT NULL,
+    gender varchar(255) DEFAULT "Others" 
+)
+
+CREATE TABLE passenger(
+	passenger_id integer PRIMARY KEY,
+    pname varchar(255) NOT NULL,
+    journey_date datetime DEFAULT CURRENT_TIMESTAMP
+)
+
+AUTO_INCREMENT
+
+CREATE TABLE passenger(
+	id integer PRIMARY KEY AUTO_INCREMENT,
+    name varchar(255) NOT NULL
+)
+
+7. ALTER TABLE
+
+	- ADD COLUMN
+	- DROP COLUMN
+	- MODIFY COLUMNS
+	- ADD/DROP CONSTRAINT
+
+ADD COLUMNS
+
+ALTER TABLE students ADD COLUMN college varchar(255) NOT NULL
+
+DROP COLUMN
+
+ALTER TABLE students DROP COLUMN college
+
+MODIFY COLUMN
+
+ALTER TABLE students MODIFY COLUMN sname integer
+
+ADD/DROP CONSTRAINT
+
+ALTER TABLE passenger ADD CONSTRAINT P_email UNIQUE(email)
+ALTER TABLE passenger DROP CONSTRAINT P_email
+
+
+		DML Commands
+
+1. INSERT INTO 
+
+INSERT INTO students(student_id,sname,email,age) VALUES(3,"Harsh","harshmahajan927@gmail.com",24)
+INSERT INTO students VALUES(5,"Shantanu","shantanuingale98@gmail.com",24);
+INSERT INTO students VALUES(6,"Shantanu","shantanuingale@gmail.com",24), (7,"Harsh","harshchatterjee@gmail.com",24),(8,"Nikhil","nikhilnayak2009@gmail.com",24);
+
+2. SELECT
+
+SELECT * FROM train
+SELECT Name,Sex,Survived FROM train
+SELECT Name AS PassengerName, Sex AS Gender, Survived FROM train
