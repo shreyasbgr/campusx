@@ -123,3 +123,18 @@ INSERT INTO students VALUES(6,"Shantanu","shantanuingale@gmail.com",24), (7,"Har
 SELECT * FROM train
 SELECT Name,Sex,Survived FROM train
 SELECT Name AS PassengerName, Sex AS Gender, Survived FROM train
+SELECT Name, SibSp + Parch as family from train
+SELECT Name, 100000 AS Compensation from train
+SELECT DISTINCT Sex from train
+SELECT DISTINCT Pclass,Embarked from train
+SELECT * FROM train WHERE Survived = 0
+SELECT * FROM train WHERE Pclass = 3 AND Survived = 0
+SELECT * FROM train WHERE Age BETWEEN 10 AND 15
+SELECT title,genre FROM movies WEHRE genre IN ('Comedy','Action','Drama')
+SELECT title FROM movies WHERE title LIKE 'A%'
+
+ORDER OF QUERY EXECUTION
+
+FROM JOIN WHERE GROUP BY HAVING SELECT DISTINCT ORDER BY
+F 	 J	  W	    G     B  H      S      D        O
+Frank John's Wicked Grave Haunts Several Dull Owls
