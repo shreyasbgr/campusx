@@ -132,9 +132,125 @@ SELECT * FROM train WHERE Pclass = 3 AND Survived = 0
 SELECT * FROM train WHERE Age BETWEEN 10 AND 15
 SELECT title,genre FROM movies WEHRE genre IN ('Comedy','Action','Drama')
 SELECT title FROM movies WHERE title LIKE 'A%'
+SELECT title FROM movies WHERE title LIKE '%man%'
 
 ORDER OF QUERY EXECUTION
 
 FROM JOIN WHERE GROUP BY HAVING SELECT DISTINCT ORDER BY
 F 	 J	  W	    G     B  H      S      D        O
 Frank John's Wicked Grave Haunts Several Dull Owls
+
+3. UPDATE
+
+UPDATE passenger SET name = 'Rahul'
+UPDATE passenger SET name = 'Parth' WHERE email LIKE '%gmail%'
+UPDATE passenger SET name = 'Ankit', email = 'abc@gmail.com' WHERE email LIKE '%yahoo%'
+
+4. DELETE
+
+DELETE FROM passenger WHERE id = 1
+DELETE FROM passenger WHERE id > 2 AND email LIKE '%yahoo%'
+DELETE FROM passenger WHERE 1 (to delete everything.. same as truncate)
+
+5. FUNCTIONS
+
+ABS - SELECT title,ABS((india_gross-budget) AS profit) FROM movies
+ROUND (upto 1 decimal pt) - SELECT title, ROUND((runtime/60),1) AS runtime_hrs FROM movies
+CEIL - SELECT title, CEIL((runtime/60),1) AS runtime_hrs FROM movies
+FLOOR - SELECT title, FLOOR((runtime/60),1) AS runtime_hrs FROM movies
+UPPER/LOWER (for strings) - SELECT UPPER(title) FROM movies
+CONCAT - SELECT title, CONCAT(actor,' ', director) AS crew FROM movies
+LENGTH - SELECT title, LENGTH(title) AS length FROM movies
+SUBSTR (first char, length of substr) - SELECT title, SUBSTR(title,1,5) AS short FROM movies
+
+AGGREGATE FUNCTIONS
+
+MIN/MAX/SUM/AVG - SELECT MAX(budget) FROM movies
+COUNT (to count all the rows) - SELECT COUNT(*) FROM movies
+COUNT(DISTINCT) - SELECT COUNT(DISTINCT(actor)) FROM movies
+
+6. ORDER BY
+
+SELECT title,(worldwide_gross - budget) AS profit FROM movies ORDER BY profit DESC
+
+LIMIT - SELECT title,(worldwide_gross - budget) AS profit FROM movies ORDER BY profit DESC LIMIT 5
+
+SELECT * FROM movies ORDER BY genre,title 
+
+7. GROUP BY
+
+SELECT actor, COUNT(*) AS num_movies FROM movies GROUP BY actor ORDER BY num_movies DESC LIMIT 5
+SELECT genre, SUM(worldwide_gross - budget) AS total_profit FROM movies GROUP BY genre ORDER BY total_profit DESC LIMIT 5
+SELECT director, AVG(worldwide_gross - budget) AS avg_profit FROM movies GROUP BY director ORDER BY avg_profit DESC LIMIT 5
+SELECT title,budget FROM movies GROUP BY title ORDER BY budget DESC LIMIT 5
+SELECT CONCAT(actor,' ',director) AS crew, SUM(worldwide_gross - budget) AS total_profit GROUP BY crew ORDER BY total_profit DESC LIMIT 5
+
+8. HAVING
+
+SELECT actor, AVG(screens) AS opening FROM movies GROUP BY actor HAVING opening > 1000 ORDER BY opening DESC
+
+9. CASE
+
+SELECT title, (worldwide_gross - budget) profit,
+CASE
+	WHEN (worldwide_gross - budget) > 1000000000 THEN "SUPER HIT"
+	WHEN (worldwide_gross - budget) > 250000000 AND (worldwide_gross - budget) < 1000000000 THEN "HIT"
+	WHEN (worldwide_gross - budget) > 0 AND (worldwide_gross - budget) < 250000000 THEN "AVERAGE"
+	ELSE "FLOP"
+END AS verdict
+FROM movies
+
+10. JOINS
+
+	1) CARTESIAN PRODUCT [CROSS JOIN]
+	SELECT * FROM users CROSS JOIN groups
+
+	2) INNER JOIN [DEFAULT]
+	SELECT * FROM membership m JOIN users u ON m.uid = u.id
+
+	3) LEFT OUTER JOIN
+	SELECT * FROM membership m LEFT OUTER JOIN users u ON m.uid = u.id
+
+	4) RIGHT OUTER JOIN
+	SELECT * FROM membership m RIGHT OUTER JOIN users u ON m.uid = u.id
+
+	5) UNION
+	SELECT id FROM users
+	UNION
+	SELECT gid FROM groups
+
+	in above, number of columns should be the same for both the tables and also, the datatypes of columns should also be the same.
+
+	6) FULL OUTER JOIN
+	SELECT * FROM membership m LEFT OUTER JOIN users u ON m.uid = u.id
+	UNION
+	SELECT * FROM membership m RIGHT OUTER JOIN users u ON m.uid = u.id
+
+	7) SELF JOIN
+	SELECT u1.name,u2.name FROM users u1 JOIN users u2 ON u1.emergency_contact = u2.id
+
+
+JOIN EXAMPLES:
+
+SELECT name,gname FROM membership m JOIN users u ON m.uid = u.id JOIN groups g ON m.gid = g.gid
+
+12. SUBQUERY
+
+INDEPENDENT SUBQUERIES
+
+	Find movie with max budget
+	SELECT * FROM movies WHERE budget = (SELECT MAX(budget) FROM movies)
+	
+	Find actor whose name starts with A
+	SELECT actor FROM movies WHERE actor IN (SELECT DISTINCT(actor) FROM movies WHERE actor LIKE 'A%')
+
+	Find movies of top actors
+	SELECT * FROM movies WHERE actor IN (SELECT actor FROM (SELECT actor,SUM(worldwide_gross - budget) AS profit FROM movies GROUP BY actor ORDER BY profit DESC LIMIT 5) A)
+
+	Key point to remember: Reference for the table is given only in case of FROM but not in case of WHERE
+
+
+CORRELATED QUERIES
+
+	Find the most hit movie of each genre
+	SELECT title,genre,(worldwide_gross - budget) AS profit FROM movies m1 WEHRE (worldwide_gross - budget) = (SELECT MAX(worldwide_gross - budget) FROM movies m2 WHERE m2.genre = m1.genre)
